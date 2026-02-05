@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import HabitService from "../services/HabitService";
+import { toast } from "react-toastify";
 
 function AddHabit({ onHabitAdded }) {
 
@@ -7,6 +8,11 @@ function AddHabit({ onHabitAdded }) {
   const [description, setDescription] = useState("");
 
   const submitHabit = () => {
+
+    if (!habitName || !description) {
+      toast.error("Please fill all fields");
+      return;
+    }
 
     const habit = {
       habitName: habitName,
@@ -16,11 +22,14 @@ function AddHabit({ onHabitAdded }) {
 
     HabitService.createHabit(habit)
       .then(() => {
+        toast.success("Habit Added Successfully!");
         setHabitName("");
         setDescription("");
         onHabitAdded();
       })
-      .catch(err => console.log(err));
+      .catch(() => {
+        toast.error("Failed to add habit");
+      });
   };
 
   return (

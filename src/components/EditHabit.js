@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import HabitService from "../services/HabitService";
+import { toast } from "react-toastify";
 
 function EditHabit({ habit, onUpdated, onCancel }) {
 
@@ -7,6 +8,11 @@ function EditHabit({ habit, onUpdated, onCancel }) {
   const [description, setDescription] = useState(habit.description);
 
   const updateHabit = () => {
+
+    if (!habitName || !description) {
+      toast.error("Fields cannot be empty");
+      return;
+    }
 
     const updatedHabit = {
       id: habit.id,
@@ -17,9 +23,12 @@ function EditHabit({ habit, onUpdated, onCancel }) {
 
     HabitService.updateHabit(habit.id, updatedHabit)
       .then(() => {
+        toast.success("Habit Updated Successfully!");
         onUpdated();
       })
-      .catch(err => console.log(err));
+      .catch(() => {
+        toast.error("Update Failed");
+      });
   };
 
   return (

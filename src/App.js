@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import HabitList from "./components/HabitList";
 import AddHabit from "./components/AddHabit";
 
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 function App() {
 
   const [refreshFlag, setRefreshFlag] = useState(false);
@@ -16,7 +19,9 @@ function App() {
 
       <AddHabit onHabitAdded={refreshHabits} />
 
-      <HabitList refresh={refreshFlag} onHabitDeleted={refreshHabits} />
+      <HabitList refresh={refreshFlag} onChange={refreshHabits} />
+
+      <ToastContainer />
     </div>
   );
 }

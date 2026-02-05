@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import HabitService from "../services/HabitService";
 import EditHabit from "./EditHabit";
+import { toast } from "react-toastify";
 
 function HabitList({ refresh, onChange }) {
 
@@ -21,10 +22,12 @@ function HabitList({ refresh, onChange }) {
 
   const deleteHabit = (id) => {
     HabitService.deleteHabit(id)
-      .then(() => {
-        onChange();
-      })
-      .catch(err => console.log(err));
+  .then(() => {
+    toast.success("Habit Deleted!");
+    loadHabits();
+  })
+  .catch(() => toast.error("Delete Failed"));
+
   };
 
   return (
