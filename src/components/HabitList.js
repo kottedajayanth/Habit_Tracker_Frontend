@@ -1,40 +1,35 @@
 import React, { useEffect, useState } from "react";
 import HabitService from "../services/HabitService";
+import EditHabit from "./EditHabit";
 
-function HabitList() {
+function HabitList({ refresh, onChange }) {
+
   const [habits, setHabits] = useState([]);
-  const [error, setError] = useState("");
+  const [editingHabit, setEditingHabit] = useState(null);
 
   useEffect(() => {
     loadHabits();
-  }, []);
+  }, [refresh]);
 
   const loadHabits = () => {
     HabitService.getHabits()
       .then((response) => {
         setHabits(response.data);
       })
-      .catch((err) => {
-        console.log(err);
-        setError("Failed to load habits");
-      });
+      .catch(err => console.log(err));
   };
 
   const deleteHabit = (id) => {
     HabitService.deleteHabit(id)
       .then(() => {
-        loadHabits();
+        onChange();
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch(err => console.log(err));
   };
 
   return (
     <div>
       <h2>Habit List</h2>
-
-      {error && <p style={{ color: "red" }}>{error}</p>}
 
       {habits.length === 0 ? (
         <p>No habits found</p>
@@ -43,15 +38,28 @@ function HabitList() {
           {habits.map((habit) => (
             <li key={habit.id}>
               <b>{habit.habitName}</b> - {habit.description}
-              <button
-                style={{ marginLeft: "10px" }}
-                onClick={() => deleteHabit(habit.id)}
-              >
+
+              <button onClick={() => setEditingHabit(habit)}>
+                Edit
+              </button>
+
+              <button onClick={() => deleteHabit(habit.id)}>
                 Delete
               </button>
             </li>
           ))}
         </ul>
+      )}
+
+      {editingHabit && (
+        <EditHabit
+          habit={editingHabit}
+          onUpdated={() => {
+            setEditingHabit(null);
+            loadHabits();
+          }}
+          onCancel={() => setEditingHabit(null)}
+        />
       )}
     </div>
   );

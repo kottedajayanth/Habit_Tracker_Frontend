@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import HabitService from "../services/HabitService";
 
-function AddHabit({ refresh }) {
+function AddHabit({ onHabitAdded }) {
 
   const [habitName, setHabitName] = useState("");
   const [description, setDescription] = useState("");
 
-  const addHabit = () => {
+  const submitHabit = () => {
+
     const habit = {
-      habitName,
-      description,
+      habitName: habitName,
+      description: description,
       userId: 1
     };
 
@@ -17,16 +18,14 @@ function AddHabit({ refresh }) {
       .then(() => {
         setHabitName("");
         setDescription("");
-        refresh();
+        onHabitAdded();
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch(err => console.log(err));
   };
 
   return (
     <div>
-      <h3>Add Habit</h3>
+      <h2>Add Habit</h2>
 
       <input
         placeholder="Habit Name"
@@ -40,7 +39,7 @@ function AddHabit({ refresh }) {
         onChange={(e) => setDescription(e.target.value)}
       />
 
-      <button onClick={addHabit}>Add Habit</button>
+      <button onClick={submitHabit}>Add Habit</button>
     </div>
   );
 }
